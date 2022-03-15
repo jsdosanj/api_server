@@ -185,11 +185,15 @@ export MAIL_TO="rangers@omnigroup.com"   # your account e-mail will be used as d
 acme.sh --issue --standalone -d i13.api.omnifocus.com
 
 # Look for suspicious and self-signed SSL certificates
-tcpdump -s 1500 -A '(tcp[((tcp[12:1] & 0xf0) >> 2)+5:1] = 0x01) and (tcp[((12:1] & 0xf0) >> 2) :1] = 0x16)'
+tcpdump -U -s 1500 -A '(tcp[((tcp[12:1] & 0xf0) >> 2)+5:1] = 0x01) and (tcp[((12:1] & 0xf0) >> 2) :1] = 0x16)'
+# Grab PID of tcpdump
+pid=$(ps -e | pgrep tcpdump)  
+echo $pid 
+# Interrupt tcpdump
+sleep 5
+kill -2 $pid
 
-# Use netcat to listen for scanning threats
-nc -v -k -l 80
-nc -v -k -l 443
+# Use nmap to listen for scanning threats
 nmap -p 80-443 192.168.0.1
 
 # Show IP address, hostname, OS version when clicking the clock in the login window
